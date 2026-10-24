@@ -10,7 +10,8 @@ const DEV_SECRET = 'dev-only-secret-change-me';
 const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: toInt(process.env.PORT, 8000),
-  dbPath: process.env.DB_PATH || 'data/bengkelku.sqlite',
+  // Di Vercel hanya /tmp yang boleh ditulis (data bersifat sementara).
+  dbPath: process.env.DB_PATH || (process.env.VERCEL ? '/tmp/bengkelku.sqlite' : 'data/bengkelku.sqlite'),
   jwtSecret: process.env.JWT_SECRET || DEV_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   bcryptRounds: toInt(process.env.BCRYPT_ROUNDS, 10),

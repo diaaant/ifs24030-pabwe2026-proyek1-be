@@ -8,7 +8,6 @@ const routes = require('./routes');
 const { mountDocs } = require('./docs/swagger');
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
 
-/* istanbul ignore next */
 const corsOptions = {
   origin: (origin, callback) => {
     const allowed = !origin || env.corsOrigins.includes('*') || env.corsOrigins.includes(origin);
@@ -16,7 +15,6 @@ const corsOptions = {
   },
 };
 
-/* istanbul ignore next */
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100,
@@ -36,8 +34,6 @@ const createApp = () => {
   app.use(helmet());
   app.use(cors(corsOptions));
   app.use(express.json({ limit: '100kb' }));
-  
-  /* istanbul ignore next */
   if (env.nodeEnv !== 'test') app.use(morgan('tiny'));
 
   app.use('/api/auth', authLimiter);

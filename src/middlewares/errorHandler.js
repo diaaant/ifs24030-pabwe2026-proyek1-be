@@ -1,16 +1,11 @@
-const env = require("../config/env");
-const AppError = require("../utils/AppError");
+const env = require('../config/env');
+const AppError = require('../utils/AppError');
 
 const notFound = (req, _res, next) => {
-  next(
-    new AppError(
-      404,
-      `Endpoint ${req.method} ${req.originalUrl} tidak ditemukan`,
-    ),
-  );
+  next(new AppError(404, `Endpoint ${req.method} ${req.originalUrl} tidak ditemukan`));
 };
 
-const SQLITE_CONSTRAINT = "SQLITE_CONSTRAINT";
+const SQLITE_CONSTRAINT = 'SQLITE_CONSTRAINT';
 
 const errorHandler = (err, _req, res, _next) => {
   if (err instanceof AppError) {
@@ -21,28 +16,18 @@ const errorHandler = (err, _req, res, _next) => {
     });
   }
 
-  if (err.type === "entity.parse.failed") {
-    return res
-      .status(400)
-      .json({ success: false, message: "Format JSON tidak valid" });
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).json({ success: false, message: 'Format JSON tidak valid' });
   }
 
-  if (typeof err.code === "string" && err.code.startsWith(SQLITE_CONSTRAINT)) {
-    return res
-      .status(409)
-      .json({ success: false, message: "Data melanggar batasan basis data" });
+  if (typeof err.code === 'string' && err.code.startsWith(SQLITE_CONSTRAINT)) {
+    return res.status(409).json({ success: false, message: 'Data melanggar batasan basis data' });
   }
 
-  /* istanbul ignore next */
-  if (env.nodeEnv !== "test") console.error(err);
-
-  /* istanbul ignore next */
+  if (env.nodeEnv !== 'test') console.error(err);
   return res.status(500).json({
     success: false,
-    message:
-      env.nodeEnv === "production"
-        ? "Terjadi kesalahan pada server"
-        : err.message,
+    message: env.nodeEnv === 'production' ? 'Terjadi kesalahan pada server' : err.message,
   });
 };
 

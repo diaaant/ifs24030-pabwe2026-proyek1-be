@@ -4,3 +4,5 @@ coverage
 data/*.sqlite*
 !data/.gitkeep
 .DS_Store
+
+.vercel

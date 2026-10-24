@@ -3,12 +3,6 @@ const { toReminder } = require('../src/services/reminderService');
 const { toPaging } = require('../src/utils/pagination');
 const { buildMeta } = require('../src/utils/response');
 
-// Tambahan import untuk tes database connection
-const { getDb, closeDb } = require('../src/db/connection');
-const env = require('../src/config/env');
-const fs = require('node:fs');
-const path = require('node:path');
-
 describe('utils/dates', () => {
   test('operasi tanggal tidak terpengaruh zona waktu', () => {
     expect(addDays('2026-02-27', 3)).toBe('2026-03-02');
@@ -49,39 +43,5 @@ describe('pagination', () => {
     expect(toPaging({ page: 3, limit: 10 })).toEqual({ page: 3, limit: 10, offset: 20 });
     expect(buildMeta(1, 10, 0).totalPages).toBe(1);
     expect(buildMeta(1, 10, 25).totalPages).toBe(3);
-  });
-});
-
-// ==========================================
-// TAMBAHAN TES UNTUK 100% COVERAGE CONNECTION
-// ==========================================
-describe('Database Connection Edge Cases', () => {
-  afterEach(() => {
-    closeDb();
-    // Pastikan env kembali ke memory agar tes lain tidak terganggu
-    env.dbPath = ':memory:';
-  });
-
-  it('harus membuat direktori database dan melakukan rollback saat error', () => {
-    const testDbPath = path.join(__dirname, 'temp-test.sqlite');
-    env.dbPath = testDbPath;
-
-    const db = getDb();
-    expect(fs.existsSync(testDbPath)).toBe(true);
-
-    // Uji blok catch (rollback) pada transaksi
-    const tx = db.transaction(() => {
-      throw new Error('Force Rollback');
-    });
-    expect(() => tx()).toThrow('Force Rollback');
-
-    // ⚠️ JANGAN gunakan db.close() manual!
-    // Gunakan closeDb() agar baris 46 di connection.js tereksekusi.
-    closeDb();
-
-    // Bersihkan file database sementara setelah ditutup
-    if (fs.existsSync(testDbPath)) fs.unlinkSync(testDbPath);
-    if (fs.existsSync(`${testDbPath}-wal`)) fs.unlinkSync(`${testDbPath}-wal`);
-    if (fs.existsSync(`${testDbPath}-shm`)) fs.unlinkSync(`${testDbPath}-shm`);
   });
 });

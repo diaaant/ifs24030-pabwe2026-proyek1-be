@@ -91,3 +91,9 @@ Set `NODE_ENV=production`, `JWT_SECRET`, `CORS_ORIGINS` (URL frontend), dan `DB_
 | Booking | `GET /api/bookings/availability`, `GET/POST /api/bookings`, `GET /api/bookings/:id`, `PATCH /api/bookings/:id/cancel`, `PATCH /api/bookings/:id/status` (admin), `POST /api/bookings/:id/complete` (admin) |
 | Riwayat | `GET /api/history`, `GET /api/history/:id` |
 | Lainnya | `GET /api/reminders`, `GET /api/stats/dashboard`, `GET /api/health` |
+
+## Deploy ke Vercel (alternatif cepat)
+
+`api/index.js` dan `vercel.json` membuat API bisa berjalan sebagai fungsi serverless di Vercel.
+Set environment: `JWT_SECRET` (minimal 32 karakter), `CORS_ORIGINS` (URL frontend), `ADMIN_PASSWORD`.
+Catatan: di Vercel SQLite disimpan di `/tmp` sehingga data **tidak permanen** (hilang saat fungsi di-restart dan di-seed ulang otomatis). Cocok untuk demo; untuk data permanen pakai Railway/Fly.io/VPS.
