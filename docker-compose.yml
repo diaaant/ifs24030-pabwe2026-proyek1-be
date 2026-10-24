@@ -1,0 +1,19 @@
+# Backend saja: docker compose up -d --build
+# API: http://localhost:8000/api  |  Docs: http://localhost:8000/api/docs
+services:
+  backend:
+    build: .
+    environment:
+      NODE_ENV: production
+      JWT_SECRET: ${JWT_SECRET:-ganti-secret-ini-dengan-string-acak-minimal-32-karakter}
+      # URL frontend yang boleh memanggil API ini (pisahkan dengan koma)
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin123!}
+    ports:
+      - "8000:8000"
+    volumes:
+      - bengkelku-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  bengkelku-data:
